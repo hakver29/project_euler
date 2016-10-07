@@ -8,4 +8,4 @@ def main(n):
     x = list(int(i) for i in list(str(fac(n))))
     return sum(x)
 
-main(100)
+print(main(100))
