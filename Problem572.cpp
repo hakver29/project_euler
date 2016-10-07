@@ -4,13 +4,13 @@
 
 using namespace std;
 
-struct yolo{
+struct Str{
     int x;
     int y;
 };
 
-vector<yolo> factors(int X, int n){
-    vector<yolo> A;
+vector<Str> factors(int X, int n){
+    vector<Str> A;
     if(X == 0){
         for(int i = -n; i <= n; i++){
             if(i == 0){
@@ -46,7 +46,7 @@ int cnt_func(int rnk,int n){
             int i;
             if(-n <= rnk-a-e && rnk-a-e <= n){
                 i = rnk-a-e;
-                vector<yolo> X1,Y1,Z1;
+                vector<Str> X1,Y1,Z1;
                 X1 = factors((a - a*a + e - e*e - i + i*i)/2,n);
                 Y1 = factors((a - a*a - e + e*e + i - i*i)/2,n);
                 Z1 = factors((-a + a*a + e - e*e + i - i*i)/2,n);
@@ -71,8 +71,9 @@ int cnt_func(int rnk,int n){
 }
 
 int main(){
+    int n;
+    cin >> n;
     int cntr = 0;
-    int n = 50;
     for(int rnk = 0; rnk <= 2; rnk++){
         cntr += cnt_func(rnk,n);
     }
