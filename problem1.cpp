@@ -9,3 +9,4 @@ int main(){
             S += i;
     }
     cout << S << endl;
+}
