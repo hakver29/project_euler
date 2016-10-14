@@ -5,16 +5,11 @@
 using namespace std;
 
 bool isPalindrome(vector<int> P){
-    vector<int> P_1;
-    for(int i = P.size()-1; i >= 0; i--){
-        P_1.push_back(P[i]);
-    }
-    for(int i = 0; i < P.size(); i++){
-        if(P_1[i] != P[i]){
-            return 0;
-        }
-    }
-    return 1;
+    vector<int> P_1(P);
+    reverse(P_1.begin(),P_1.end());
+    if (equal(P.begin(), P.begin() + P.size(), P_1.begin()))
+        return 1;
+    return 0;
 }
 
 int main(){
