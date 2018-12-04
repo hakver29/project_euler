@@ -64,10 +64,21 @@ def solve_instance(length, perm_index, rest_number):
                 T[j] = str(i)
         T = int("".join(T))
         if not len(str(T)) < length:
-            print(T)
             num_prime += isPrime(T)
     return num_prime
 
+def get_lowest_prime_in_instance(length,perm_index,rest_number):
+    for i in range(0,10):
+        number = get_instance(length, perm_index, rest_number)
+        T = number
+        for j in range(len(T)):
+            if T[j] == "*":
+                T[j] = str(i)
+        T = int("".join(T))
+        if not len(str(T)) < length:
+            if isPrime(T):
+                return T
+    
 def solve_length(length):
     ind = indices(length)
     temp = 0
@@ -78,13 +89,12 @@ def solve_length(length):
             for j in rest_num:
                 X = solve_instance(length,i, j)
                 if X == 8:
-                    return get_instance(length,i,j)
+                    return get_lowest_prime_in_instance(length,i,j)
         
 def main():
-    length = 1
-    while True:
-        solve_length(length)
-        length += 1
+    length = 6
+    return solve_length(6)
+    
     
         
     
