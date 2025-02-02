@@ -1,91 +1,118 @@
-def checkSum(inner, outer):
-    left = outer[0] + inner[0] + inner[1]
-    top = outer[1] + inner[1] + inner[2]
-    top_right = outer[2] + inner[2] + inner[3]
-    bottom_right = outer[3] + inner[3] + inner[4]
-    bottom_left = outer[4] + inner[4] + inner[0]
-    if bottom_left == left and left == top and top == top_right and top_right == bottom_right and bottom_right == bottom_left:
-        return fixFormat(inner, outer)
+from itertools import permutations
+import operator
 
-    return False
+ops = {
+    "+": operator.add,
+    "-": operator.sub,
+    "*": operator.mul,
+    "/": operator.truediv
+}
 
-def fixFormat(I, O):
-    if O[0] < O[1] and O[0] < O[2] and O[0] < O[3] and O[0] < O[4]:
-        return [O[0], I[0], I[1],
-                O[1], I[1], I[2],
-                O[2], I[2], I[3],
-                O[3], I[3], I[4],
-                O[4], I[4], I[0]]
-    if O[1] < O[0] and O[1] < O[2] and O[1] < O[3] and O[1] < O[4]:
-        return [O[1], I[1], I[2],
-                O[2], I[2], I[3],
-                O[3], I[3], I[4],
-                O[4], I[4], I[0],
-                O[0], I[0], I[1]]
-    if O[2] < O[0] and O[2] < O[1] and O[2] < O[3] and O[2] < O[4]:
-        return [O[2], I[2], I[3],
-                O[3], I[3], I[4],
-                O[4], I[4], I[0],
-                O[0], I[0], I[1],
-                O[1], I[1], I[2]]
-    if O[3] < O[0] and O[3] < O[1] and O[3] < O[2] and O[3] < O[4]:
-        return [O[3], I[3], I[4],
-                O[4], I[4], I[0],
-                O[0], I[0], I[1],
-                O[1], I[1], I[2],
-                O[2], I[2], I[3]]
-    if O[4] < O[0] and O[4] < O[1] and O[4] < O[2] and O[4] < O[3]:
-        return [O[4], I[4], I[0],
-                O[0], I[0], I[1],
-                O[1], I[1], I[2],
-                O[2], I[2], I[3],
-                O[3], I[3], I[4]]
+def get_permutations(nums):
+    return list(permutations(nums))
 
-def findMax(L):
-    max = 0
-    for i in L:
-        tempMax = ''
-        for j in i:
-            tempMax = tempMax + str(j)
+def get_operators():
+    operators = "+++---***///"
+    return list(set(permutations(operators, 3)))
 
-        if int(tempMax) > max and len(tempMax) == 16:
-            max = int(tempMax)
-    return max
+def get_digits():
+    digits = [0,1,2,3,4,5,6,7,8,9]
+    digits = list(set(permutations(digits, 4)))
+    digits_list = []
+    for i in digits:
+        d = list(i)
+        d.sort()
+        if d not in digits_list:
+            digits_list.append(d)
+
+    digits_list.sort()
+    return digits_list
+
+def get_combinations(a,b,c,d,op1,op2,op3):
+    C = []
+
+    try:
+        result_1 = ops[op1](a,ops[op2](b,ops[op3](c,d)))
+        if (result_1 > 0 and result_1 == int(result_1) and result_1 not in C):
+            C.append(int(result_1))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_2 = ops[op2](ops[op1](a,b),ops[op3](c,d))
+        if (result_2 > 0 and result_2 == int(result_2) and result_2 not in C):
+            C.append(int(result_2))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_3 = ops[op1](a,ops[op3](ops[op2](b,c),d))
+        if (result_3 > 0 and result_3 == int(result_3) and result_3 not in C):
+            C.append(int(result_3))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_4 = ops[op3](ops[op1](a, ops[op2](b, c)), d)
+        if (result_4 > 0 and result_4 == int(result_4) and result_4 not in C):
+            C.append(int(result_4))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_5 = ops[op3](ops[op2](ops[op1](a, b), c), d)
+        if (result_5 > 0 and result_5 == int(result_5) and result_5 not in C):
+            C.append(int(result_5))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_6 = ops[op3](ops[op2](ops[op1](a, b), c), d)
+        if (result_6 > 0 and result_6 == int(result_6) and result_6 not in C):
+            C.append(int(result_6))
+    except ZeroDivisionError:
+        pass
+
+    try:
+        result_7 = ops[op1](a, ops[op2](b, ops[op3](c, d)))
+        if (result_7 > 0 and result_7 == int(result_7) and result_7 not in C):
+            C.append(int(result_7))
+    except ZeroDivisionError:
+        pass
+
+    return C
+
+def get_all_combinations(a,b,c,d):
+    B = []
+    perm = list(permutations([a,b,c,d]))
+    operators = get_operators()
+    for p in perm:
+        for o in operators:
+            comb = get_combinations(p[0],p[1],p[2],p[3],o[0],o[1],o[2])
+            if comb != None:
+                B = B + comb
+    B.sort()
+    B = list(set(B))
+
+    for i in range(1, len(B)):
+        if B[i] != B[i-1] + 1:
+            return B[:i]
+    return B
+
 
 
 def main():
-    L = []
-    A = [1,2,3,4,5,6,7,8,9,10]
-    for a in A:
-        B = [x for x in A if x != a]
-        for b in B:
-            C = [x for x in B if x != b]
-            for c in C:
-                D = [x for x in C if x != c]
-                for d in D:
-                    E = [x for x in D if x != d]
-                    for e in E:
-                        inner = [a,b,c,d,e]
+    current = 0
+    current_digits = [0,0,0,0]
+    digits = get_digits()
 
+    for i in digits:
+        A = get_all_combinations(i[0],i[1],i[2],i[3])
+        if len(A) > current:
+            current = len(A)
+            current_digits = [i[0], i[1], i[2], i[3]]
 
-                        F = [x for x in E if x != e]
-                        for f in F:
-                            G = [x for x in F if x != f]
-                            for g in G:
-                                H = [x for x in G if x != g]
-                                for h in H:
-                                    I = [x for x in H if x != h]
-                                    for i in I:
-                                        J = [x for x in I if x != i]
-                                        for j in J:
-                                            outer = [f,g,h,i,j]
+    return int(''.join(map(str, current_digits)))
 
-                                            S = checkSum(inner, outer)
-                                            #print(S)
-                                            if S != False:
-                                                if S not in L:
-                                                    L.append(S)
-
-    return findMax(L)
 
 print(main())
